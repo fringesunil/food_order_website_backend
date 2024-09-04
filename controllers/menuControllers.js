@@ -1,7 +1,8 @@
 const Menu = require("../models/menuModel");
+const { imageUpload } = require("../utils/imageUpload");
 
 const getAllMenu = async (req, res) => {
-    const menu= await Menu.find().exec();
+    const menu= await Menu.find(req.query).populate('restaurant_id');
     res.json(menu)
   }
 
@@ -13,7 +14,7 @@ const getMenubyid=async (req, res) => {
  const addMenu = async (req, res) => {
   let imageUrl;
   if(req.file){
-    imageUrl=await imageUpload(req.file.path);
+    imageUrl= await imageUpload(req.file.path);
  }
     const data = req.body
     const menu = new Menu({

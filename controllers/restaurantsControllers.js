@@ -2,7 +2,7 @@ const Restaurant = require("../models/restaurantsModel");
 const { imageUpload } = require("../utils/imageUpload");
 
 const getAllRestuarants = async (req, res) => {
-   const restaurants= await Restaurant.find().exec();
+   const restaurants= await Restaurant.find(req.query).exec();
    res.json(restaurants)
   }
 

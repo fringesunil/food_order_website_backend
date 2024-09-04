@@ -1,7 +1,7 @@
 const Order = require("../models/orderModel");
 
 const getAllOrder = async (req, res) => {
-    const order= await Order.find().exec();
+    const order= await Order.find().populate('user_id').populate('menu_id');
     res.json(order)
   }
 
