@@ -6,13 +6,28 @@ const saltRounds = 10;
 
 const getAlluser = async (req, res) => {
     const user= await User.find().exec();
-    res.json(user)
+    const response = user.map(user => ({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile_number: user.mobile_number,
+      role: user.role,
+      image: user.image
+    }));
+    res.json(response)
 
   }
 
 const getUserbyid=async (req, res) => {
     const user= await User.findById(req.params.userid).exec();
-    res.json(user)
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile_number: user.mobile_number,
+      role: user.role,
+      image: user.image
+    })
 
   }
   
@@ -29,7 +44,13 @@ const getUserbyid=async (req, res) => {
     })
     
     await user.save();
-    res.json(user)
+    res.json({
+      name: user.name,
+      email: user.email,
+      mobile_number: user.mobile_number,
+      role: user.role,
+      image: user.image
+    })
 
   }
  
