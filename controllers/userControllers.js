@@ -35,14 +35,18 @@ const getUserbyid=async (req, res) => {
   let imageUrl;
     const data = req.body
     const hash = bcrypt.hashSync(req.body.password, saltRounds);
+    const hashconfpas =bcrypt.hashSync(req.body.confirm_password, saltRounds);
     if(req.file){
        imageUrl=await imageUpload(req.file.path);
     }
     const user = new User({...data,
         password: hash,
+        confirm_password:hashconfpas,
         image:imageUrl
     })
-    
+    if(req.body.password != req.body.confirm_password){
+      return res.status(401).json({ message: 'Password Mismatch' });
+    }
     await user.save();
     res.json({
       name: user.name,
