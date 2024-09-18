@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const cors = require('cors')
 const restaurantsRoutes = require(`./routes/restaurantsRoutes`)
 const menuRoutes = require(`./routes/menuRoutes`)
 const cartRoutes = require(`./routes/cartRoutes`)
@@ -13,6 +14,10 @@ const cookieParser = require('cookie-parser')
 const app = express()
 const port = 3000
 
+app.use(cors({
+  credentials: true,
+    origin: true
+}))
 app.use(express.json())
 app.use(cookieParser())
 app.use('/restaurants', restaurantsRoutes)
