@@ -35,6 +35,51 @@ const getCouponbyid=async (req, res) => {
     res.send('Delete Successfully')
   }
 
+  // const applyCoupons = async (req, res) => {
+  //   const { cartId, couponCode } = req.body;
+  //   try {
+  //     const cart = await Cart.findById(cartId);
+  //     if (!cart) {
+  //       return res.status(404).json({ message: 'Cart not found' });
+  //     }
+  //     const coupon = await Coupon.findOne({ coupon_code: couponCode });
+  //     if (!coupon) {
+  //       return res.status(404).json({ message: 'Coupon not found' });
+  //     }
+  //     if (new Date() > coupon.exp_date) {
+  //       return res.status(400).json({ message: 'Coupon is expired' });
+  //     }
+  //     const discountAmount = (cart.total_amount * coupon.discount_percentage) / 100;
+  //     const finalPrice = cart.total_amount - discountAmount;
+  //     cart.discount = discountAmount;
+  //     cart.total_amount = finalPrice;
+  //     cart.gst_amount = (finalPrice*18/100)
+
+  //     console.log('Calculated values:');
+  //     console.log('Discount Amount:', discountAmount);
+  //     console.log('Final Price:', finalPrice);
+  //     console.log('GST Amount:', cart.gst_amount);
+
+  //     console.log('Cart before save:', cart.toObject()); // Use toObject to log actual values
+    
+  //     // Save updated cart
+  //     const updatedCart = await cart.save();
+      
+  //     // Log the saved cart to verify changes
+  //     console.log('Cart after save:', updatedCart.toObject());
+  
+  //     res.status(200).json({
+  //       message: 'Coupon applied successfully',
+  //       discountAmount,
+  //       finalPrice,
+        
+  //     });
+  //   } catch (error) {
+  //     res.status(500).json({ message: 'Server error', error: error.message });
+  //   }
+  
+  // }
+
   const applyCoupons = async (req, res) => {
     const { cartId, couponCode } = req.body;
     try {
@@ -42,20 +87,35 @@ const getCouponbyid=async (req, res) => {
       if (!cart) {
         return res.status(404).json({ message: 'Cart not found' });
       }
+      
       const coupon = await Coupon.findOne({ coupon_code: couponCode });
       if (!coupon) {
         return res.status(404).json({ message: 'Coupon not found' });
       }
+      
       if (new Date() > coupon.exp_date) {
         return res.status(400).json({ message: 'Coupon is expired' });
       }
+  
+      // Calculate discount amount
       const discountAmount = (cart.total_amount * coupon.discount_percentage) / 100;
       const finalPrice = cart.total_amount - discountAmount;
-      cart.discount = discountAmount;
-      cart.total_amount = finalPrice;
-      cart.gst_amount = (finalPrice*18/100)
+      
+      // Update cart fields using updateOne
+      const result = await Cart.updateOne(
+        { _id: cartId },
+        {
+          $set: {
+            discount: discountAmount,
+            total_amount: finalPrice,
+            gst_amount: (finalPrice * 18) / 100,
+          },
+        }
+      );
   
-      await cart.save();
+      if (result.modifiedCount === 0) {
+        return res.status(400).json({ message: 'Cart update failed' });
+      }
   
       res.status(200).json({
         message: 'Coupon applied successfully',
@@ -65,8 +125,8 @@ const getCouponbyid=async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
+  };
   
-  }
 
   module.exports={
     getAllCoupons,

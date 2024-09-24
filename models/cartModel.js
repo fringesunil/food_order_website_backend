@@ -17,7 +17,8 @@ const cartSchema = new mongoose.Schema({
     }
    ],
    total_amount:Number,
-   gst_amount:Number
+   gst_amount:Number,
+   discount:Number
   });
 
   cartSchema.pre('save',async function (next) {
@@ -30,6 +31,7 @@ const cartSchema = new mongoose.Schema({
     }
     this.total_amount = total;
     this.gst_amount = (total*18/100)
+    this.discount =0;
     next();
   })
 

@@ -4,7 +4,10 @@ const nodemailer = require('nodemailer');
 
 
 const getAllOrder = async (req, res) => {
-    const order= await Order.find().populate('user_id').populate('menu_id');
+    const order= await Order.find().populate('user_id').populate({
+      path: 'cart_items.menu_id',
+      model: 'Menu'
+  });
     res.json(order)
   }
 

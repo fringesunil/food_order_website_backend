@@ -12,4 +12,4 @@ router.get('/', getAllAddress)
 
   router.delete('/:addressid',deleteAddress )
 
-module.exports = router
+  module.exports = router

@@ -1,7 +1,7 @@
 const Cart = require("../models/cartModel");
 
 const getAllCart = async (req, res) => {
-    const cart= await Cart.find().populate('user_id').populate({
+    const cart= await Cart.find(req.query).populate('user_id').populate({
       path: 'cart_items.menu_id',model: 'Menu' 
   });
     res.json(cart)
