@@ -13,7 +13,7 @@ const login = async (req, res) => {
    const passwordMatch =  bcrypt.compareSync(password,user.password)
    if(passwordMatch){
         const token = jwt.sign({ _id: user._id,email: user.email,role:user.role }, process.env.JWT_SECRET_KEY);
-        res.cookie("token",token,{httpOnly:true,maxAge :1*60*60*1000, secure:false})
+        res.cookie("token",token,{httpOnly:true,maxAge :1*60*60*1000, secure:true})
         res.status(200).json(
            {
             "status":true,
