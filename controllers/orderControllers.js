@@ -1,10 +1,12 @@
 require('dotenv').config()
 const Order = require("../models/orderModel");
 const nodemailer = require('nodemailer');
+const Razorpay = require('razorpay');
+
 
 
 const getAllOrder = async (req, res) => {
-    const order= await Order.find().populate('user_id').populate({
+    const order= await Order.find(req.query).populate('user_id').populate({
       path: 'cart_items.menu_id',
       model: 'Menu'
   });
@@ -51,10 +53,33 @@ const getOrderbyid=async (req, res) => {
     res.send('Delete Successfully')
   }
 
+  const initOrder = async (req, res) => {
+    const { total_amount } = req.body;
+  
+    var instance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+  
+    const options = {
+      amount: total_amount * 100,  // Razorpay expects amount in paise
+      currency: 'INR',
+      receipt: 'receipt_order_74396',
+    };
+  
+    try {
+      const order = await instance.orders.create(options);
+      res.json(order);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
   module.exports={
     getAllOrder,
     getOrderbyid,
     addOrder,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    initOrder
   }
