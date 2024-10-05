@@ -1,7 +1,7 @@
 const Address = require("../models/addressModel");
 
 const getAllAddress = async (req, res) => {
-    const address= await Address.find().exec();
+    const address= await Address.find(req.query).exec();
     res.json(address)
 
   }
