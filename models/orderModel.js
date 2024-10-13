@@ -10,6 +10,10 @@ const orderSchema = new mongoose.Schema({
    discount:Number,
    gst_amount:Number,
    payment_completed:Boolean,
+   address_id:{
+    type:mongoose.ObjectId,
+    ref:"Address"
+   },
    cart_items:[{
     menu_id:{
         type:mongoose.ObjectId,

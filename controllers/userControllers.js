@@ -49,6 +49,7 @@ const getUserbyid=async (req, res) => {
     }
     await user.save();
     res.json({
+      _id:user._id,
       name: user.name,
       email: user.email,
       mobile_number: user.mobile_number,
