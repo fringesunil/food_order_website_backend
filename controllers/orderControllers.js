@@ -60,11 +60,17 @@ const getOrderbyid=async (req, res) => {
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
+
+    const generateReceiptNumber = () => {
+      const timestamp = Date.now(); 
+      const randomNum = Math.floor(Math.random() * 100000); 
+      return `receipt_order_${timestamp}_${randomNum}`;
+    };
   
     const options = {
       amount: total_amount * 100,  // Razorpay expects amount in paise
       currency: 'INR',
-      receipt: 'receipt_order_74396',
+      receipt: generateReceiptNumber(),
     };
   
     try {
