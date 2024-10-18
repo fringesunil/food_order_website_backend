@@ -31,33 +31,43 @@ const getUserbyid=async (req, res) => {
 
   }
   
- const addUser = async (req, res) => {
-  let imageUrl;
-    const data = req.body
-    const hash = bcrypt.hashSync(req.body.password, saltRounds);
-    const hashconfpas =bcrypt.hashSync(req.body.confirm_password, saltRounds);
-    if(req.file){
-       imageUrl=await imageUpload(req.file.path);
-    }
-    const user = new User({...data,
+  const addUser = async (req, res) => {
+    try {
+      const { email, password, confirm_password, ...data } = req.body;
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+      if (password !== confirm_password) {
+        return res.status(401).json({ message: 'Password Mismatch' });
+      }
+      const hash = bcrypt.hashSync(password, saltRounds);
+      const hashConfPas = bcrypt.hashSync(confirm_password, saltRounds);
+      let imageUrl;
+      if (req.file) {
+        imageUrl = await imageUpload(req.file.path);
+      }
+      const user = new User({
+        ...data,
+        email, 
         password: hash,
-        confirm_password:hashconfpas,
-        image:imageUrl
-    })
-    if(req.body.password != req.body.confirm_password){
-      return res.status(401).json({ message: 'Password Mismatch' });
+        confirm_password: hashConfPas,
+        image: imageUrl
+      });
+      await user.save();
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        mobile_number: user.mobile_number,
+        role: user.role,
+        image: user.image
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error });
     }
-    await user.save();
-    res.json({
-      _id:user._id,
-      name: user.name,
-      email: user.email,
-      mobile_number: user.mobile_number,
-      role: user.role,
-      image: user.image
-    })
-
-  }
+  };
+  
  
  const updateUser = async (req, res) => {
     if(req.file){
