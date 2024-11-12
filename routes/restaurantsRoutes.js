@@ -8,10 +8,10 @@ router.get('/', getAllRestuarants)
 
   router.get('/:restaurantsid',getRestuarantsbyid )
 
-  router.post('/',upload.single("image"),addRestuarants )
+  router.post('/',checkadmin,upload.single("image"),addRestuarants )
 
-  router.patch('/:restaurantsid',upload.single("image"),updateRestuarants )
+  router.patch('/:restaurantsid',checkadmin,upload.single("image"),updateRestuarants )
 
-  router.delete('/:restaurantsid',deleteRestuarants )
+  router.delete('/:restaurantsid',checkadmin,deleteRestuarants )
 
 module.exports = router
