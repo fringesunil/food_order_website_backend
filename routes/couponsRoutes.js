@@ -7,11 +7,11 @@ router.get('/', getAllCoupons)
 
   router.get('/:couponid',getCouponbyid )
 
-  router.post('/',checkadmin,addCoupons )
+  router.post('/',addCoupons )
 
-  router.patch('/:couponid',checkadmin,updateCoupons )
+  router.patch('/:couponid',updateCoupons )
 
-  router.delete('/:couponid',checkadmin,deleteCoupons )
+  router.delete('/:couponid',deleteCoupons )
 
   router.post('/apply-coupon',applyCoupons )
 

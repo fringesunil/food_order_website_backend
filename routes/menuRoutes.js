@@ -8,10 +8,10 @@ router.get('/',getAllMenu)
 
   router.get('/:menuid',getMenubyid )
 
-  router.post('/',checkadmin,upload.single("image"),addMenu )
+  router.post('/',upload.single("image"),addMenu )
 
-  router.patch('/:menuid',checkadmin,upload.single("image"),updateMenu )
+  router.patch('/:menuid',upload.single("image"),updateMenu )
 
-  router.delete('/:menuid',checkadmin,deleteMenu )
+  router.delete('/:menuid',deleteMenu )
 
 module.exports = router
